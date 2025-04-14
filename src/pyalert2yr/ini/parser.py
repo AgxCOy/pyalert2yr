@@ -113,7 +113,7 @@ class IniParser(FileHandler[IniClass]):
             elif len(meta['parents']) > 2:
                 warn(
                     '你并未选择按 Phobos 方式保存，'
-                    f'但 {ret} 中不止一个父小节：{meta['parents']}。')
+                    f'但 {ret} 中不止一个父小节：{meta["parents"]}。')
             else:
                 ret += f':[{meta["parents"][0]}]'
         for k, v in meta['pairs'].items():

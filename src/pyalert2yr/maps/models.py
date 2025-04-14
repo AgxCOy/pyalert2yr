@@ -119,8 +119,7 @@ class ActionsPointer(SerializedComponents[TriggerAction]):
         self._seek = 1
         self._curidx = 0
 
-    @property
-    def length(self) -> int:
+    def __len__(self) -> int:
         return int(self.__raw[0])
 
     def reset_seek(self) -> None:
@@ -129,7 +128,7 @@ class ActionsPointer(SerializedComponents[TriggerAction]):
 
     @property
     def seekable(self) -> bool:
-        return self._curidx < self.length
+        return self._curidx < len(self)
 
     def next(self) -> None:
         if not self.seekable:
@@ -162,8 +161,7 @@ class EventsPointer(SerializedComponents[TriggerEvent]):
         self._seek = 1
         self._curidx = 0
 
-    @property
-    def length(self) -> int:
+    def __len__(self) -> int:
         return int(self.__raw[0])
 
     def reset_seek(self) -> None:
@@ -172,7 +170,7 @@ class EventsPointer(SerializedComponents[TriggerEvent]):
 
     @property
     def seekable(self) -> bool:
-        return self._curidx < self.length
+        return self._curidx < len(self)
 
     def next(self) -> None:
         if not self.seekable:

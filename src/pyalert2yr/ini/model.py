@@ -10,7 +10,7 @@ As for `[#include]`, just see `ini.parser`.
 """
 
 from collections.abc import MutableMapping
-from typing import Generator, Iterator, Sequence, TypedDict
+from typing import Callable, Generator, Iterator, Sequence, TypedDict
 from warnings import warn
 
 # from ..abstract import T
@@ -105,6 +105,7 @@ class IniSectionProxy(MutableMapping[str, str]):
         return list(ret.keys())
 
     # 说起来一个小节还应该有什么操作（
+    # may take references from Chloride.RA2Scripts.
 
 
 class IniSectionMeta(TypedDict):
@@ -191,14 +192,14 @@ class IniClass(MutableMapping[str, IniSectionProxy]):
             parents=self.__inherits.get(key)
         )
 
-    def _set_meta(self, meta: IniSectionMeta) -> None:
-        """for IniTreeParser reading."""
-        if meta['section'] not in self.__raw_dicts:
-            self.__raw_dicts[meta['section']] = meta['pairs'].copy()
-        else:
-            self.__raw_dicts[meta['section']].update(meta['pairs'])
-        if meta['parents']:  # not None not empty
-            self.inherits[meta['section']] = meta['parents']
+    # def _set_meta(self, meta: IniSectionMeta) -> None:
+    #     """for IniTreeParser reading."""
+    #     if meta['section'] not in self.__raw_dicts:
+    #         self.__raw_dicts[meta['section']] = meta['pairs'].copy()
+    #     else:
+    #         self.__raw_dicts[meta['section']].update(meta['pairs'])
+    #     if meta['parents']:  # not None not empty
+    #         self.inherits[meta['section']] = meta['parents']
 
     def __traverse_parents(self, key: str) -> Generator[tuple[
         str,

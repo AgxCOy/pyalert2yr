@@ -14,7 +14,7 @@ from typing import TypedDict
 from xml.dom import minidom
 from xml.etree import ElementTree as et
 
-import yaml
+import yaml  # type: ignore
 
 from ..abstract import FileHandler
 from .consts import SHIMAKAZE_SCHEMA, CsfMark
@@ -47,7 +47,7 @@ class CsfFileParser(CsfParser):
     def __readheader(self, fp: BufferedReader) -> CsfHead:
         if fp.read(4).decode('ascii') != CsfMark.IS_CSF:
             raise InvalidCsfRecord('文件头错误或损坏——不是有效的红红 CSF 文件。')
-        header = CsfHead(*unpack('LLLLL', fp.read(4 * 5)))
+        header = CsfHead(*unpack('<LLLLL', fp.read(4 * 5)))
         return header
 
     def __readlabel(self, fp: BufferedReader, _csf: CsfDocument) -> None:
@@ -66,7 +66,7 @@ class CsfFileParser(CsfParser):
         if fp.read(4).decode('ascii') != CsfMark.IS_LBL:
             raise InvalidCsfRecord('键值对校验失败——文件可能已损坏。')
 
-        numstr, lenlbl = unpack('LL', fp.read(4 * 2))
+        numstr, lenlbl = unpack('<LL', fp.read(4 * 2))
         lblname = fp.read(lenlbl).decode('ascii')
         lblval: list[CsfVal] = []
         i = 0
@@ -98,10 +98,10 @@ class CsfFileParser(CsfParser):
             case _:
                 raise InvalidCsfRecord('CSF 值校验失败——文件可能已损坏。')
 
-        length = unpack('L', fp.read(4))[0] << 1
+        length = unpack('<L', fp.read(4))[0] << 1
         data = CsfVal(value=self.coding_val(fp.read(length)).decode('utf-16'))
         if is_eval:
-            elength = unpack('L', fp.read(4))[0]
+            elength = unpack('<L', fp.read(4))[0]
             data.extra = fp.read(elength).decode('ascii')
         return data
 
@@ -431,7 +431,7 @@ class CsfLLangParser(CsfParser):
                 )
                 if self._is_yaml else
                 (
-                    f'# {self._fn.split('.')[0]}\n'
+                    f'# {self._fn.split(".")[0]}\n'
                     f'# csf count: {len(_csf)}\n'
                     f'# build time: {curtime}\n\n'
                 )

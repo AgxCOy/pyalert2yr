@@ -4,12 +4,12 @@
 # @Author : Kariko Lin
 
 from abc import ABCMeta, abstractmethod
-from typing import TypeVar
+from typing import Any, Generic, TypeVar
 
 T = TypeVar('T')
 
 
-class SerializedComponents[T](metaclass=ABCMeta):
+class SerializedComponents(Generic[T], metaclass=ABCMeta):
     @abstractmethod
     def reset_seek(self) -> None:
         raise NotImplementedError
@@ -32,8 +32,18 @@ class SerializedComponents[T](metaclass=ABCMeta):
     def __str__(self) -> str:
         raise NotImplementedError
 
+    @abstractmethod
+    def __len__(self) -> int:
+        raise NotImplementedError
 
-class FileHandler[T](metaclass=ABCMeta):
+    def __enter__(self) -> 'SerializedComponents[T]':
+        return self
+
+    def __exit__(self, *_: Any, **__: Any) -> None:
+        pass
+
+
+class FileHandler(Generic[T], metaclass=ABCMeta):
     def __init__(self, filename: str) -> None:
         self._fn = filename
 
